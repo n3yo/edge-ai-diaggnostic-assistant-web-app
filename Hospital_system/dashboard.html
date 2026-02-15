@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Analysis System - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1>Medical Analysis System</h1>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Left Panel - Inputs -->
+            <div class="panel inputs-panel">
+                <h2>Inputs</h2>
+                
+                <div class="input-section">
+                    <h3>Upload Medical Image</h3>
+                    <input type="file" id="medicalImage" accept="image/*" onchange="handleImageUpload(event)">
+                    <small id="imageFileName">No file chosen</small>
+                </div>
+
+                <div class="input-section">
+                    <h3>Upload Therapeutic Data</h3>
+                    <input type="file" id="therapeuticData" accept=".txt,.pdf,.docx" onchange="handleDataUpload(event)">
+                    <small id="dataFileName">No file chosen</small>
+                </div>
+
+                <button class="btn" onclick="analyzeData()" style="margin-top: 20px;">Analyze Data</button>
+            </div>
+
+            <!-- Middle Panel - Preview -->
+            <div class="panel preview-panel">
+                <h2>Uploaded Image or Data</h2>
+                <div class="preview-container">
+                    <div id="previewContent">
+                        <p>No image or data uploaded</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Results -->
+            <div class="panel results-panel">
+                <h2>Results</h2>
+                <div class="results-container">
+                    <div id="resultsContent">
+                        <p>Analysis results will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
