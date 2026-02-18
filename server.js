@@ -3,10 +3,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
+const http = require('http');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const FASTAPI_URL = process.env.FASTAPI_URL || 'http://localhost:8000';
 
 // Middleware
 app.use(cors());
@@ -138,6 +140,100 @@ app.post('/api/analyze', (req, res) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.status(200).json({ message: 'Server is running' });
+});
+
+// ─── FastAPI Proxy Routes ─────────────────────────────────────────────────────
+// These routes proxy requests to the FastAPI server so the frontend can use
+// a single origin (localhost:3000) without CORS issues.
+
+// Proxy: Vision analysis (multipart/form-data -> FastAPI)
+app.post('/api/proxy/vision', upload.single('file'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ detail: 'No image file uploaded' });
+    }
+
+    const conditions = req.body.conditions || '';
+    const fs = require('fs');
+    const FormData = require('form-data');
+
+    // Dynamically require form-data (install separately if needed)
+    let fd;
+    try {
+        fd = new FormData();
+    } catch (e) {
+        return res.status(500).json({ detail: 'form-data package not installed on proxy server. Call FastAPI directly.' });
+    }
+
+    fd.append('file', fs.createReadStream(req.file.path), req.file.originalname);
+    fd.append('conditions', conditions);
+
+    const targetUrl = new URL('/analyze/vision', FASTAPI_URL);
+    const options = {
+        method: 'POST',
+        hostname: targetUrl.hostname,
+        port: targetUrl.port || 8000,
+        path: targetUrl.pathname,
+        headers: fd.getHeaders()
+    };
+
+    const proxyReq = http.request(options, (proxyRes) => {
+        res.status(proxyRes.statusCode);
+        proxyRes.pipe(res);
+        proxyRes.on('end', () => fs.unlink(req.file.path, () => {}));
+    });
+
+    proxyReq.on('error', (err) => {
+        fs.unlink(req.file.path, () => {});
+        res.status(502).json({ detail: `Could not reach FastAPI server: ${err.message}` });
+    });
+
+    fd.pipe(proxyReq);
+});
+
+// Proxy: Therapeutics analysis (JSON -> FastAPI)
+app.post('/api/proxy/therapeutics', (req, res) => {
+    const body = JSON.stringify(req.body);
+    const targetUrl = new URL('/analyze/therapeutics', FASTAPI_URL);
+
+    const options = {
+        method: 'POST',
+        hostname: targetUrl.hostname,
+        port: targetUrl.port || 8000,
+        path: targetUrl.pathname,
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(body)
+        }
+    };
+
+    const proxyReq = http.request(options, (proxyRes) => {
+        res.status(proxyRes.statusCode);
+        proxyRes.pipe(res);
+    });
+
+    proxyReq.on('error', (err) => {
+        res.status(502).json({ detail: `Could not reach FastAPI server: ${err.message}` });
+    });
+
+    proxyReq.write(body);
+    proxyReq.end();
+});
+
+// FastAPI health check passthrough
+app.get('/api/proxy/health', (req, res) => {
+    const targetUrl = new URL('/health', FASTAPI_URL);
+    const options = {
+        method: 'GET',
+        hostname: targetUrl.hostname,
+        port: targetUrl.port || 8000,
+        path: targetUrl.pathname
+    };
+    const proxyReq = http.request(options, (proxyRes) => {
+        res.status(proxyRes.statusCode);
+        proxyRes.pipe(res);
+    });
+    proxyReq.on('error', () => res.status(502).json({ status: 'FastAPI server unreachable' }));
+    proxyReq.end();
 });
 
 // 404 handler
