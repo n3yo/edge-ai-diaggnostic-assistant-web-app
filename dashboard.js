@@ -133,8 +133,8 @@ function renderVisionResults(data) {
                  </p>
                  <table style="width:100%;border-collapse:collapse;font-size:13px;">
                     <thead>
-                        <tr style="background:#f0f0f0;">
-                            <th style="padding:8px;border:1px solid #ddd;text-align:left;">Condition</th>
+                        <tr style="background:#dddddd00;">
+                            <th style="padding:8px;border:1px solid #dddddd;text-align:left;">Condition</th>
                             <th style="padding:8px;border:1px solid #ddd;text-align:right;">Score</th>
                             <th style="padding:8px;border:1px solid #ddd;">Confidence Bar</th>
                         </tr>

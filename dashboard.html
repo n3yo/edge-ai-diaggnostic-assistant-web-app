@@ -4,44 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDGE AI DIAGNOSTIC ASSISTANT - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* ── Tab Navigation ── */
         .page-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
             padding-bottom: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        
+
         .page-tab {
-            padding: 12px 24px;
-            background-color: #f0f0f0;
-            border: none;
+            padding: 11px 22px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(220,228,255,0.65);
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
-            border-radius: 5px 5px 0 0;
-            transition: all 0.3s ease;
+            font-family: inherit;
+            border-radius: 10px 10px 0 0;
+            transition: all 0.25s ease;
+            letter-spacing: 0.02em;
         }
-        
+
         .page-tab:hover {
-            background-color: #e0e0e0;
+            background: rgba(255,255,255,0.12);
+            color: #f0f4ff;
         }
-        
+
         .page-tab.active {
-            background-color: #667eea;
-            color: white;
-            border-bottom: 3px solid #667eea;
+            background: linear-gradient(135deg, rgba(102,126,234,0.5), rgba(118,75,162,0.5));
+            backdrop-filter: blur(12px);
+            color: #fff;
+            border-color: rgba(129,140,248,0.5);
+            box-shadow: 0 -2px 12px rgba(129,140,248,0.3);
         }
-        
+
         .page-content {
             display: none;
         }
-        
+
         .page-content.active {
             display: block;
         }
+
+        /* ── Page-2 Glass Cards ── */
+        .glass-card {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: box-shadow 0.3s, transform 0.2s;
+        }
+        .glass-card:hover {
+            box-shadow: 0 10px 36px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.13);
+            transform: translateY(-2px);
+        }
+
+        .glass-card h3 {
+            margin-top: 0;
+            color: #f0f4ff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .glass-card p {
+            font-size: 13px;
+            color: rgba(200,210,255,0.65);
+            margin-bottom: 10px;
+        }
+
+        .glass-input {
+            width: 100%;
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 8px;
+            color: #f0f4ff;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .glass-input::placeholder { color: rgba(200,210,255,0.3); }
+        .glass-input:focus {
+            outline: none;
+            border-color: #818cf8;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(129,140,248,0.22);
+        }
+
+        .glass-textarea {
+            width: 100%;
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 8px;
+            color: #f0f4ff;
+            font-size: 13px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 70px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .glass-textarea::placeholder { color: rgba(200,210,255,0.3); }
+        .glass-textarea:focus {
+            outline: none;
+            border-color: #818cf8;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(129,140,248,0.22);
+        }
+
+        .glass-select {
+            width: 100%;
+            padding: 10px 13px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 8px;
+            color: #f0f4ff;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .glass-select option { background: #1a1040; color: #f0f4ff; }
+        .glass-select:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129,140,248,0.22);
+        }
+
+        .glass-pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            min-height: 80px;
+            color: rgba(200,210,255,0.75);
+            margin: 0;
+            font-family: monospace;
+        }
+
+        .glass-results {
+            padding: 15px;
+            background: rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            min-height: 120px;
+            color: rgba(200,210,255,0.6);
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+
+        /* ── Analysis History Table ── */
+        .history-section {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+        .history-section h2 {
+            color: #f0f4ff;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .glass-table-wrap {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.13);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 28px rgba(0,0,0,0.3);
+        }
+        .glass-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .glass-table thead tr {
+            background: rgba(129,140,248,0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .glass-table th {
+            padding: 12px 14px;
+            text-align: left;
+            color: rgba(200,210,255,0.8);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+        .glass-table th:not(:first-child) { text-align: center; }
+        .glass-table tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.15s;
+        }
+        .glass-table tbody tr:last-child { border-bottom: none; }
+        .glass-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+        .glass-table td {
+            padding: 12px 14px;
+            color: rgba(220,228,255,0.75);
+            font-size: 13px;
+            border: none;
+        }
+        .glass-table td:not(:first-child) { text-align: center; }
     </style>
 </head>
 <body>
@@ -77,8 +256,8 @@
                 <!-- Conditions Section -->
                 <div class="input-section" style="margin-top: 20px;">
                     <h3>Conditions to Check</h3>
-                    <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Enter comma-separated conditions (e.g. Pneumonia, Normal, Tuberculosis)</p>
-                    <textarea id="conditionsInput" placeholder="Pneumonia, Normal, Tuberculosis" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: Arial; resize: vertical; min-height: 70px; box-sizing: border-box;">Pneumonia, Normal, Tuberculosis</textarea>
+                    <p style="font-size: 13px; color: rgba(200,210,255,0.6); margin-bottom: 8px;">Enter comma-separated conditions (e.g. Pneumonia, Normal, Tuberculosis)</p>
+                    <textarea id="conditionsInput" placeholder="Pneumonia, Normal, Tuberculosis" class="glass-textarea" style="font-family: inherit; resize: vertical;">Pneumonia, Normal, Tuberculosis</textarea>
                 </div>
 
                 <button class="btn" onclick="analyzeData()" style="margin-top: 20px; width: 100%;">🔬 Analyze Image</button>
@@ -115,46 +294,46 @@
             <div style="padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; align-items: start;">
 
                 <!-- Left: Task selection + SMILES input -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Task Selection -->
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                        <h3 style="margin-top: 0;">Select Prediction Task</h3>
-                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Each task maps to a TxGemma prompt template.</p>
-                        <select id="taskDropdown" onchange="onTaskSelected()" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-bottom: 10px;">
+                    <div class="glass-card">
+                        <h3>Select Prediction Task</h3>
+                        <p>Each task maps to a TxGemma prompt template.</p>
+                        <select id="taskDropdown" onchange="onTaskSelected()" class="glass-select" style="margin-bottom: 10px;">
                             <option value="">-- Select a task --</option>
                         </select>
-                        <div id="taskDescriptionBox" style="font-size: 13px; color: #555; padding: 8px; background: #f9f9f9; border-radius: 4px; min-height: 36px;"></div>
+                        <div id="taskDescriptionBox" style="font-size: 13px; color: rgba(200,210,255,0.6); padding: 8px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 36px; border: 1px solid rgba(255,255,255,0.08);"></div>
                     </div>
 
                     <!-- Drug SMILES Input -->
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                        <h3 style="margin-top: 0;">Drug SMILES String</h3>
-                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Enter the SMILES notation of the molecule to analyse.</p>
-                        <textarea id="drugSmilesInput" placeholder="e.g. C1=CC=C(C=C1)C(C2=CC=CC=C2)O" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; resize: vertical; min-height: 70px; box-sizing: border-box;"></textarea>
+                    <div class="glass-card">
+                        <h3>Drug SMILES String</h3>
+                        <p>Enter the SMILES notation of the molecule to analyse.</p>
+                        <textarea id="drugSmilesInput" placeholder="e.g. C1=CC=C(C=C1)C(C2=CC=CC=C2)O" class="glass-textarea"></textarea>
                     </div>
 
                     <!-- Additional question -->
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                        <h3 style="margin-top: 0;">Additional Question <span style="font-weight: normal; font-size: 13px; color: #999;">(optional)</span></h3>
-                        <input type="text" id="additionalQuestionInput" placeholder="e.g. Explain your reasoning." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing: border-box;">
+                    <div class="glass-card">
+                        <h3>Additional Question <span style="font-weight: normal; font-size: 12px; color: rgba(200,210,255,0.4);">(optional)</span></h3>
+                        <input type="text" id="additionalQuestionInput" placeholder="e.g. Explain your reasoning." class="glass-input">
                     </div>
 
-                    <button class="btn" onclick="analyzeTherapeuticData()" style="background-color: #2196F3; width: 100%;">💊 Run TxGemma Analysis</button>
-                    <div id="txApiStatus" style="padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
+                    <button class="btn" onclick="analyzeTherapeuticData()" style="background: linear-gradient(135deg, #2196F3, #1565C0);">💊 Run TxGemma Analysis</button>
+                    <div id="txApiStatus" style="padding: 8px 12px; border-radius: 8px; font-size: 13px; display: none;"></div>
                 </div>
 
                 <!-- Right: Prompt preview + results -->
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Prompt template preview -->
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                        <h3 style="margin-top: 0;">Prompt Template Preview</h3>
-                        <pre id="promptTemplatePreview" style="white-space: pre-wrap; word-break: break-word; background: #f4f4f4; padding: 12px; border-radius: 4px; font-size: 12px; min-height: 80px; color: #444; margin: 0;">Select a task to see its prompt template.</pre>
+                    <div class="glass-card">
+                        <h3>Prompt Template Preview</h3>
+                        <pre id="promptTemplatePreview" class="glass-pre">Select a task to see its prompt template.</pre>
                     </div>
 
                     <!-- Analysis result -->
-                    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
-                        <h3 style="margin-top: 0;">Analysis Results</h3>
-                        <div id="therapeuticResultsContent" style="padding: 15px; background-color: #f9f9f9; border-radius: 4px; min-height: 120px; color: #999; white-space: pre-wrap; font-size: 14px;">
+                    <div class="glass-card">
+                        <h3>Analysis Results</h3>
+                        <div id="therapeuticResultsContent" class="glass-results">
                             Results will appear here after analysis.
                         </div>
                     </div>
@@ -162,22 +341,22 @@
             </div>
 
             <!-- Assigned Tasks History -->
-            <div style="padding: 0 20px; margin-bottom: 30px;">
+            <div class="history-section">
                 <h2>Analysis History</h2>
-                <div style="padding: 20px; background-color: white; border: 1px solid #ddd; border-radius: 5px;">
-                    <table style="width: 100%; border-collapse: collapse; background-color: white;">
+                <div class="glass-table-wrap">
+                    <table class="glass-table">
                         <thead>
-                            <tr style="background-color: #f0f0f0; border-bottom: 2px solid #ddd;">
-                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Task</th>
-                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Drug SMILES</th>
-                                <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Category</th>
-                                <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Status</th>
-                                <th style="padding: 10px; text-align: center; border: 1px solid #ddd;">Actions</th>
+                            <tr>
+                                <th>Task</th>
+                                <th>Drug SMILES</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="tasksList">
                             <tr>
-                                <td colspan="5" style="padding: 20px; text-align: center; color: #999; border: 1px solid #ddd;">No analyses run yet. Select a task and run TxGemma analysis to get started!</td>
+                                <td colspan="5" style="padding: 24px; text-align: center; color: rgba(200,210,255,0.4);">No analyses run yet. Select a task and run TxGemma analysis to get started!</td>
                             </tr>
                         </tbody>
                     </table>
